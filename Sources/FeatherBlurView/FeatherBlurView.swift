@@ -40,9 +40,15 @@ public class FeatherBlurUIView: UIView {
 public struct FeatherBlurView: UIViewRepresentable {
     public typealias UIViewType = FeatherBlurUIView
 
-    public var radius: CGFloat = 4
-    public var startPoint: UnitPoint = .top
-    public var endPoint: UnitPoint = .bottom
+    let radius: CGFloat
+    let startPoint: UnitPoint
+    let endPoint: UnitPoint
+
+    public init(radius: CGFloat = 4, startPoint: UnitPoint = .top, endPoint: UnitPoint = .bottom) {
+        self.radius = radius
+        self.startPoint = startPoint
+        self.endPoint = endPoint
+    }
 
     public func makeUIView(context _: Context) -> FeatherBlurUIView {
         FeatherBlurUIView(radius: radius, startPoint: startPoint, endPoint: endPoint)
