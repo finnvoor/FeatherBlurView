@@ -1,10 +1,10 @@
 import SwiftUI
 import UIKit
 
+// MARK: - FeatherBlurUIView
+
 public class FeatherBlurUIView: UIView {
-    override public class var layerClass: AnyClass {
-        NSClassFromString(["CA", "Backdrop", "Layer"].joined()) ?? CALayer.self
-    }
+    // MARK: Lifecycle
 
     public init(radius: CGFloat = 4, startPoint: UnitPoint = .top, endPoint: UnitPoint = .bottom) {
         super.init(frame: .zero)
@@ -31,18 +31,21 @@ public class FeatherBlurUIView: UIView {
         layer.filters = [variableBlur]
     }
 
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
+    @available(*, unavailable) required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: Public
+
+    override public class var layerClass: AnyClass {
+        NSClassFromString(["CA", "Backdrop", "Layer"].joined()) ?? CALayer.self
     }
 }
 
-public struct FeatherBlurView: UIViewRepresentable {
-    public typealias UIViewType = FeatherBlurUIView
+// MARK: - FeatherBlurView
 
-    let radius: CGFloat
-    let startPoint: UnitPoint
-    let endPoint: UnitPoint
+public struct FeatherBlurView: UIViewRepresentable {
+    // MARK: Lifecycle
 
     public init(radius: CGFloat = 4, startPoint: UnitPoint = .top, endPoint: UnitPoint = .bottom) {
         self.radius = radius
@@ -50,11 +53,21 @@ public struct FeatherBlurView: UIViewRepresentable {
         self.endPoint = endPoint
     }
 
+    // MARK: Public
+
+    public typealias UIViewType = FeatherBlurUIView
+
     public func makeUIView(context _: Context) -> FeatherBlurUIView {
         FeatherBlurUIView(radius: radius, startPoint: startPoint, endPoint: endPoint)
     }
 
     public func updateUIView(_: FeatherBlurUIView, context _: Context) {}
+
+    // MARK: Internal
+
+    let radius: CGFloat
+    let startPoint: UnitPoint
+    let endPoint: UnitPoint
 }
 
 #Preview {
@@ -62,9 +75,6 @@ public struct FeatherBlurView: UIViewRepresentable {
         AsyncImage(url: URL(string: "https://w.wiki/6opG")) { image in
             image.resizable().aspectRatio(1, contentMode: .fill)
         } placeholder: { ProgressView() }
-        VStack {
-            Spacer()
-            FeatherBlurView().frame(height: 400)
-        }
+        FeatherBlurView()
     }.ignoresSafeArea()
 }
