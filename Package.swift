@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "FeatherBlurView",
-    platforms: [.iOS(.v17)],
+    platforms: [.iOS(.v15)],
     products: [.library(name: "FeatherBlurView", targets: ["FeatherBlurView"])],
     targets: [.target(name: "FeatherBlurView")]
 )
