@@ -1,3 +1,4 @@
+import CoreImage.CIFilterBuiltins
 import SwiftUI
 import UIKit
 
@@ -22,35 +23,25 @@ public class FeatherBlurUIView: UIView {
             return
         }
 
-        guard let gradient = CGGradient(
-            colorsSpace: CGColorSpaceCreateDeviceRGB(),
-            colors: [
-                UIColor.clear.cgColor,
-                UIColor.black.cgColor
-            ] as CFArray,
-            locations: [0, 1]
-        ) else { return }
-        let startPoint = CGPoint(
-            x: startPoint.x * 100,
-            y: startPoint.y * 100
-        )
-        let endPoint = CGPoint(
+        let gradient = CIFilter.smoothLinearGradient()
+        gradient.color0 = .clear
+        gradient.color1 = .black
+        gradient.point0 = CGPoint(
             x: endPoint.x * 100,
             y: endPoint.y * 100
         )
-
-        UIGraphicsBeginImageContext(CGSize(width: 100, height: 100))
-        let context = UIGraphicsGetCurrentContext()!
-
-        context.drawLinearGradient(
-            gradient,
-            start: startPoint,
-            end: endPoint,
-            options: []
+        gradient.point1 = CGPoint(
+            x: startPoint.x * 100,
+            y: startPoint.y * 100
         )
 
-        let mask = UIGraphicsGetImageFromCurrentImageContext()!.cgImage!
-        UIGraphicsEndImageContext()
+        let mask = Self.context.createCGImage(
+            gradient.outputImage!,
+            from: CGRect(
+                origin: .zero,
+                size: CGSize(width: 100, height: 100)
+            )
+        )
 
         variableBlur.setValue(radius, forKey: "inputRadius")
         variableBlur.setValue(mask, forKey: "inputMaskImage")
@@ -68,6 +59,10 @@ public class FeatherBlurUIView: UIView {
     override public class var layerClass: AnyClass {
         NSClassFromString(["CA", "Backdrop", "Layer"].joined()) ?? CALayer.self
     }
+
+    // MARK: Private
+
+    private static let context = CIContext()
 }
 
 // MARK: - FeatherBlurView
@@ -114,7 +109,7 @@ struct FeatherBlurView_Previews: PreviewProvider {
             AsyncImage(url: URL(string: "https://w.wiki/6opG")) { image in
                 image.resizable().aspectRatio(1, contentMode: .fill)
             } placeholder: { ProgressView() }
-            FeatherBlurView(startPoint: .bottom, endPoint: .top)
+            FeatherBlurView(startPoint: .top, endPoint: .bottom)
         }.ignoresSafeArea()
     }
 }
