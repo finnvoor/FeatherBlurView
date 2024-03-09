@@ -36,7 +36,7 @@ public class FeatherBlurUIView: UIView {
         )
 
         let mask = Self.context.createCGImage(
-            gradient.outputImage!,
+            startPoint == endPoint ? .black : gradient.outputImage!.clampedToExtent(),
             from: CGRect(
                 origin: .zero,
                 size: CGSize(width: 100, height: 100)
@@ -109,7 +109,7 @@ struct FeatherBlurView_Previews: PreviewProvider {
             AsyncImage(url: URL(string: "https://w.wiki/6opG")) { image in
                 image.resizable().aspectRatio(1, contentMode: .fill)
             } placeholder: { ProgressView() }
-            FeatherBlurView(startPoint: .top, endPoint: .bottom)
+            FeatherBlurView(startPoint: .bottom, endPoint: .top)
         }.ignoresSafeArea()
     }
 }
